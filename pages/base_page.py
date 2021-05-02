@@ -1,14 +1,21 @@
 import selenium.webdriver.support.ui as ui
+from modules.base import get_driver
 
 
 class BasePage:
 
-    def __init__(self, driver):
-        self.driver = driver
-        self.webdriver_wait = 10
+    def __init__(self):
+        self.driver = get_driver()
+        self.driver_wait = 10
+
+    def open_url(self, url):
+        self.driver.get(url)
+
+    def close_browser(self):
+        self.driver.close()
 
     def wait_element_displayed(self, locator):
-        wait = ui.WebDriverWait(self.driver, self.webdriver_wait)
+        wait = ui.WebDriverWait(self.driver, self.driver_wait)
         wait.until(lambda driver: self.driver.find_element_by_xpath(locator).is_displayed())
 
     def is_displayed(self, locator):
