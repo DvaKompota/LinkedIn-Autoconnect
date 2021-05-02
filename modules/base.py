@@ -1,4 +1,11 @@
-import selenium.webdriver as webdriver
+from selenium import webdriver
+from data.credentials import email
+from data.credentials import password
+
+
+def get_data():
+    data = {"driver": get_driver(), "email": email, "password": password}
+    return data
 
 
 def get_driver():

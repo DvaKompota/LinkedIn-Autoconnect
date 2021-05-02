@@ -4,8 +4,8 @@ from modules.base import get_driver
 
 class BasePage:
 
-    def __init__(self):
-        self.driver = get_driver()
+    def __init__(self, data):
+        self.driver = data["driver"]
         self.driver_wait = 10
 
     def get_element(self, locator_name):
