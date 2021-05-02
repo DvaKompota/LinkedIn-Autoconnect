@@ -1,25 +1,23 @@
 import selenium.webdriver.support.ui as ui
 
 
-webdriver_wait = 10
+class BasePage:
 
+    def __init__(self, driver):
+        self.driver = driver
+        self.webdriver_wait = 10
 
-def wait_for_element_displayed(driver, locator):
-    wait = ui.WebDriverWait(driver, webdriver_wait)
-    wait.until(lambda driver: driver.find_element_by_xpath(locator).is_displayed())
+    def wait_element_displayed(self, locator):
+        wait = ui.WebDriverWait(self.driver, self.webdriver_wait)
+        wait.until(lambda driver: self.driver.find_element_by_xpath(locator).is_displayed())
 
+    def is_displayed(self, locator):
+        return self.driver.find_element_by_xpath(locator).is_displayed()
 
-def is_displayed(driver, locator):
-    return driver.find_element_by_xpath(locator).is_displayed()
+    def click(self, locator):
+        self.wait_element_displayed(locator)
+        self.driver.find_element_by_xpath(locator).click()
 
-
-def click(driver, locator):
-    wait_for_element_displayed(driver, locator)
-    driver.find_element_by_xpath(locator).click()
-
-
-def enter_text(driver, locator, text):
-    wait_for_element_displayed(driver, locator)
-    driver.find_element_by_xpath(locator).send_keys(text)
-
-
+    def enter_text(self, locator, text):
+        self.wait_element_displayed(locator)
+        self.driver.find_element_by_xpath(locator).send_keys(text)
