@@ -1,5 +1,4 @@
 import selenium.webdriver.support.ui as ui
-from modules.base import get_driver
 
 
 class BasePage:
@@ -31,3 +30,7 @@ class BasePage:
     def enter_text(self, locator, text):
         self.wait_element_displayed(locator)
         self.driver.find_element_by_xpath(self.get_element(locator)).send_keys(text)
+
+    def get_element_text(self, locator):
+        self.wait_element_displayed(locator)
+        return self.driver.find_element_by_xpath(self.get_element(locator)).text
