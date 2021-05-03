@@ -11,4 +11,3 @@ def login(data):
     page.enter_text("pass_field", data["password"])
     page.click("submit_button")
     page.wait_element_displayed("avatar")
-    page.wait_element_displayed("my_network")
