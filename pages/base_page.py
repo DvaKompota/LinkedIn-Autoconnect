@@ -1,5 +1,6 @@
 import selenium.webdriver.support.ui as ui
 from selenium.common.exceptions import StaleElementReferenceException
+from selenium.common.exceptions import NoSuchElementException
 from time import time
 from time import sleep
 
@@ -44,7 +45,10 @@ class BasePage:
                     break
 
     def is_displayed(self, locator):
-        return self.driver.find_element_by_xpath(self.get_element(locator)).is_displayed()
+        try:
+            return self.driver.find_element_by_xpath(self.get_element(locator)).is_displayed()
+        except NoSuchElementException:
+            return False
 
     def is_selected(self, locator):
         return "selected" in self.driver.find_element_by_xpath(self.get_element(locator)).get_attribute("class")
