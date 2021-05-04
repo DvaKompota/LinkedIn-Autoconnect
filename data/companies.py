@@ -10,6 +10,7 @@ companies = [
     "ARRIVAL",
     "Zoox",
     "Rivian",
+    "Cruise",
     "Waymo",
     "Apple"
 ]
