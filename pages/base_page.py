@@ -30,8 +30,13 @@ class BasePage:
     def wait_element_not_displayed(self, locator):
         end_time = time() + self.driver_wait
         while time() < end_time:
-            if not self.is_displayed(locator):
-                break
+            try:
+                if not self.is_displayed(locator):
+                    break
+            except StaleElementReferenceException:
+                sleep(0.5)
+                if not self.is_displayed(locator):
+                    break
 
     def wait_element_selected(self, locator):
         end_time = time() + self.driver_wait
@@ -64,3 +69,7 @@ class BasePage:
     def get_element_text(self, locator):
         self.wait_element_displayed(locator)
         return self.driver.find_element_by_xpath(self.get_element(locator)).text
+
+    def get_element_attribute(self, locator, attribute):
+        self.wait_element_displayed(locator)
+        return self.driver.find_element_by_xpath(self.get_element(locator)).get_attribute(attribute)
