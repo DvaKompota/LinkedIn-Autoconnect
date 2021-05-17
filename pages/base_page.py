@@ -25,7 +25,11 @@ class BasePage:
 
     def wait_element_displayed(self, locator):
         wait = ui.WebDriverWait(self.driver, self.driver_wait)
-        wait.until(lambda driver: self.driver.find_element_by_xpath(self.get_element(locator)).is_displayed())
+        try:
+            wait.until(lambda driver: self.driver.find_element_by_xpath(self.get_element(locator)).is_displayed())
+        except StaleElementReferenceException:
+            sleep(0.5)
+            wait.until(lambda driver: self.driver.find_element_by_xpath(self.get_element(locator)).is_displayed())
 
     def wait_element_not_displayed(self, locator):
         end_time = time() + self.driver_wait
