@@ -1,11 +1,11 @@
 companies = [
-    "Boston Dynamics",
     "Deep Mind",
     "OpenAI",
     "Neuralink",
-    "SpaceX",
+    "Boston Dynamics",
     "Relativity Space",
     "Rocket Lab",
+    "SpaceX",
     "Tesla",
     "ARRIVAL",
     "Zoox",
