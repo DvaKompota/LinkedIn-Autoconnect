@@ -1,15 +1,26 @@
 from selenium import webdriver
-from data.credentials import email
-from data.credentials import password
+from data import config
+from data import credentials
+from data import companies
 
 
 def get_data():
-    data = {"driver": get_driver(), "email": email, "password": password}
+    data = {
+        "driver": get_driver(config.headless),
+        "driver_wait": config.driver_wait,
+        "email": credentials.email,
+        "password": credentials.password,
+        "search_level": config.search_level,
+        "connection_level": config.connection_level,
+        "per_company_limit": config.per_company_limit,
+        "search_list": companies.search_list,
+        }
     return data
 
 
-def get_driver():
+def get_driver(headless=True):
     opts = webdriver.ChromeOptions()
     opts.add_argument("--start-maximized")
+    opts.add_argument("--headless") if headless else None
     driver = webdriver.Chrome(options=opts)
     return driver
