@@ -1,7 +1,6 @@
 from selenium import webdriver
 from data import config
 from data import credentials
-from data import companies
 
 
 def get_data():
@@ -13,7 +12,7 @@ def get_data():
         "search_level": config.search_level,
         "connection_level": config.connection_level,
         "per_company_limit": config.per_company_limit,
-        "search_list": companies.search_list,
+        "search_list": config.search_list,
         }
     return data
 
