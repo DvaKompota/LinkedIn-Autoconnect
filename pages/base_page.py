@@ -9,7 +9,7 @@ class BasePage:
 
     def __init__(self, data):
         self.driver = data["driver"]
-        self.driver_wait = 10
+        self.driver_wait = data["driver_wait"]
 
     def get_element(self, locator_name):
         try:
