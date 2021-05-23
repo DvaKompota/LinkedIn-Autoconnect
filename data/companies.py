@@ -1,4 +1,4 @@
-companies = [
+search_list = [
     "Deep Mind",
     "OpenAI",
     "Neuralink",
