@@ -1,6 +1,7 @@
-import selenium.webdriver.support.ui as ui
+from selenium.webdriver.common.action_chains import ActionChains
 from selenium.common.exceptions import StaleElementReferenceException
 from selenium.common.exceptions import NoSuchElementException
+import selenium.webdriver.support.ui as ui
 from time import time
 from time import sleep
 
@@ -77,3 +78,8 @@ class BasePage:
     def get_element_attribute(self, locator, attribute):
         self.wait_element_displayed(locator)
         return self.driver.find_element_by_xpath(self.get_element(locator)).get_attribute(attribute)
+
+    def scroll_to_element(self, locator):
+        self.wait_element_displayed(locator)
+        element = self.driver.find_element_by_xpath(self.get_element(locator))
+        ActionChains(self.driver).move_to_element(element).perform()
