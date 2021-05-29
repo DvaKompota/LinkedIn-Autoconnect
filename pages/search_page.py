@@ -121,8 +121,13 @@ class SearchPage(BasePage):
                     invites_sent += 1
         return invites_sent
 
+    def go_to_persons_profile(self, card_no: int):
+        breakpoint()
+        person_name_locator = f'({self.search_result_card_locator}[{card_no}]){self.name_on_card}'
+        self.click(person_name_locator)
+
     def go_to_next_search_page(self, last_page: int):
-        self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+        self.scroll_to_bottom()
         current_page = int(self.get_element_attribute(self.current_page_locator, 'data-test-pagination-page-btn'))
         next_page_locator = f'{self.pagination_li_locator}[@data-test-pagination-page-btn={current_page + 1}]'
         if self.is_displayed(next_page_locator):
