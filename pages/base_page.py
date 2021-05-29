@@ -83,3 +83,6 @@ class BasePage:
         self.wait_element_displayed(locator)
         element = self.driver.find_element_by_xpath(self.get_element(locator))
         ActionChains(self.driver).move_to_element(element).perform()
+
+    def scroll_to_bottom(self):
+        self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
