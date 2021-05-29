@@ -8,6 +8,10 @@ from time import sleep
 
 class BasePage:
 
+    circle_1_text = "1st"
+    circle_2_text = "2nd"
+    circle_3_text = "3rd"
+
     def __init__(self, data):
         self.driver = data["driver"]
         self.driver_wait = data["driver_wait"]
@@ -84,5 +88,11 @@ class BasePage:
         element = self.driver.find_element_by_xpath(self.get_element(locator))
         ActionChains(self.driver).move_to_element(element).perform()
 
+    def scroll_to(self, height: int):
+        self.driver.execute_script(f'window.scrollTo(0, {height});')
+
     def scroll_to_bottom(self):
         self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+
+    def go_back(self):
+        self.driver.back()
