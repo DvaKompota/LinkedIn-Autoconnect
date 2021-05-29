@@ -8,6 +8,7 @@ import re
 class SearchPage(BasePage):
 
     search_url = "https://www.linkedin.com/search/results/people/"
+    us_1st = "?geoUrn=%5B%22103644278%22%5D&network=%5B"F"%5D&origin=FACETED_SEARCH"
     us_2nd = "?geoUrn=%5B%22103644278%22%5D&network=%5B%22S%22%5D&origin=FACETED_SEARCH"
     us_2nd_and_3rd = "?geoUrn=%5B%22103644278%22%5D&network=%5B%22S%22%2C%22O%22%5D&origin=FACETED_SEARCH"
 
@@ -44,8 +45,10 @@ class SearchPage(BasePage):
     pagination_button_locator = f'{pagination_li_locator}/button'
     pagination_dots_button_locator = f'//li/button/span[.="…"]/..'
 
-    def make_search_url(self, circle: int = 2) -> str:
-        if circle == 2:
+    def make_search_url(self, circle: int) -> str:
+        if circle == 1:
+            url = f'{self.search_url}{self.us_1st}'
+        elif circle == 2:
             url = f'{self.search_url}{self.us_2nd}'
         else:
             url = f'{self.search_url}{self.us_2nd_and_3rd}'
