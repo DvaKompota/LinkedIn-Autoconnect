@@ -4,7 +4,7 @@ per_company_limit = 10
 driver_wait = 20
 headless = True
 search_list = [
-    "Deep Mind",
+    "DeepMind",
     "OpenAI",
     "Neuralink",
     "Boston Dynamics",
