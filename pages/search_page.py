@@ -30,11 +30,13 @@ class SearchPage(BasePage):
     cards_default_quantity = 10
     connection_circle_locator = '//*[contains(@class, "entity-result__badge ")]'
     connect_button_locator = '//button/*[text()="Connect"]/..'
-    circle_1_text = "1st"
-    circle_2_text = "2nd"
-    circle_3_text = "3rd"
+    title_and_company_locator = '//*[contains(@class, "primary-subtitle")]'
+
     dialog_locator = '//div[@role="dialog"]'
     dialog_heading_locator = f'{dialog_locator}//div[contains(@class, "modal__header")]'
+    more_than_most_text = "You've sent more invitations than most"
+    close_to_limit_text = "You're close to the weekly invitation limit"
+    reached_limit_text = "You’ve reached the weekly invitation limit"
     send_button_locator = f'{dialog_locator}//button/*[text()="Send"]/..'
     add_note_button_locator = f'{dialog_locator}//button/*[text()="Add a note"]/..'
     got_it_button_locator = f'{dialog_locator}//button/*[text()="Got it"]/..'
@@ -79,8 +81,16 @@ class SearchPage(BasePage):
             return 0
         else:
             results_count = self.get_results_count()
-            pages_count = int(results_count / 10) + 1 if results_count % 10 != 1 else int(results_count / 10)
+            if results_count < 10:
+                pages_count = 1
+            elif results_count % 10 != 1:
+                pages_count = int(results_count / self.cards_default_quantity) + 1
+            else:
+                pages_count = int(results_count / self.cards_default_quantity)
             return pages_count
+
+    def get_people_count(self):
+        return len(self.driver.find_elements_by_xpath(self.get_element(self.search_result_card_locator)))
 
     def get_results_count(self):
         results_string = self.get_element_text(self.search_results_quantity_locator).replace(",", "")
@@ -106,12 +116,14 @@ class SearchPage(BasePage):
                 return invites_sent
             current_card = f'{self.search_result_card_locator}[{card}]'
             connection_circle_badge = f'({current_card}){self.connection_circle_locator}'
+            title_and_company = f'({current_card}){self.title_and_company_locator}'
             connect_button = f'({current_card}){self.connect_button_locator}'
             connection_level_text = self.circle_3_text if connection_level == 3 else self.circle_2_text
             if self.is_displayed(connect_button):
                 badge_text = self.get_element_text(connection_circle_badge)
+                title_and_company_text = self.get_element_text(title_and_company)
                 connection_name = self.get_element_text(f'({current_card}){self.name_on_card}')
-                if connection_level_text in badge_text:
+                if connection_level_text in badge_text and company in title_and_company_text:
                     self.click(connect_button)
                     self.wait_element_displayed(self.dialog_locator)
                     self.click(self.send_button_locator)
@@ -135,14 +147,19 @@ class SearchPage(BasePage):
             self.click(self.pagination_dots_button_locator)
 
     def check_dialog_header(self):
+        end_time = time() + 1
+        while time() < end_time:
+            if self.is_displayed(self.dialog_locator):
+                break
         if self.is_displayed(self.dialog_locator):
-            if "You’ve reached the weekly invitation limit" in self.get_element_text(self.dialog_heading_locator):
+            heading_text = self.get_element_text(self.dialog_heading_locator)
+            if self.reached_limit_text in heading_text:
                 self.close_browser()
                 print("I'm deeply sorry, my Lord, but we've reached the weekly invitation limit. Let's wait 1 week.")
-            elif "limit" in self.get_element_text(self.dialog_heading_locator):
+            elif self.more_than_most_text in heading_text or self.close_to_limit_text in heading_text:
                 self.click(self.got_it_button_locator)
                 self.wait_element_not_displayed(self.dialog_locator)
-            elif "Connect" in self.get_element_text(self.dialog_heading_locator):
+            elif "Connect" in heading_text:
                 self.click(self.dismiss_button_locator)
                 self.wait_element_not_displayed(self.dialog_locator)
             else:
