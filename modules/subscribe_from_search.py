@@ -17,7 +17,7 @@ for company in data["search_list"]:
     invites_sent = 0
     for page_no in range(1, search_pages_count + 1):
         if invites_sent == data["per_company_limit"]:
-            print(f'Already sent {invites_sent} invitation to {company} employees, which is maximum for one company')
+            print(f'Already sent {invites_sent} invitations to {company} employees, which is maximum for one company')
             break
         page.wait_all_people_loaded(page_no, search_pages_count)
         invites_sent = page.send_invites(company, invites_sent, data["per_company_limit"], connection_level=2)

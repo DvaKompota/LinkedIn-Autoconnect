@@ -8,7 +8,7 @@ import re
 class SearchPage(BasePage):
 
     search_url = "https://www.linkedin.com/search/results/people/"
-    us_1st = "?geoUrn=%5B%22103644278%22%5D&network=%5B"F"%5D&origin=FACETED_SEARCH"
+    us_1st = "?geoUrn=%5B%22103644278%22%5D&network=%5B%22F%22%5D&origin=FACETED_SEARCH"
     us_2nd = "?geoUrn=%5B%22103644278%22%5D&network=%5B%22S%22%5D&origin=FACETED_SEARCH"
     us_2nd_and_3rd = "?geoUrn=%5B%22103644278%22%5D&network=%5B%22S%22%2C%22O%22%5D&origin=FACETED_SEARCH"
 
