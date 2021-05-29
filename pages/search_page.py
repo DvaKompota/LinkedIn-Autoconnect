@@ -122,7 +122,6 @@ class SearchPage(BasePage):
         return invites_sent
 
     def go_to_persons_profile(self, card_no: int):
-        breakpoint()
         person_name_locator = f'({self.search_result_card_locator}[{card_no}]){self.name_on_card}'
         self.click(person_name_locator)
 
