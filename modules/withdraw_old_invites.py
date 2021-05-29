@@ -1,8 +1,8 @@
-from pages.base_page import BasePage
 from pages.login_page import LoginPage
 from pages.my_network_page import MyNetworkPage
 from modules.base import get_data
 from modules.login import login
+from warnings import simplefilter
 import re
 
 
@@ -28,4 +28,5 @@ for invite_page in range(int(invites_count / 100) + 1, 0, -1):
     for invite_card in range(cards_count, 0, -1):
         if "month" in page.get_invite_age(invite_card):
             page.withdraw_invite(invite_card)
-BasePage(data).close_browser()
+page.close_browser()
+simplefilter("ignore", ResourceWarning)
