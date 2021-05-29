@@ -35,7 +35,6 @@ class MyNetworkPage(BasePage):
     def withdraw_invite(self, card_no):
         card = f'{self.invitation_card}[{card_no}]'
         locator = f'({card}){self.withdraw_button}'
-        self.scroll_to_element(card)
         self.click(locator)
         self.wait_element_displayed(self.withdraw_dialog)
         self.wait_element_displayed(self.dialog_withdraw_button)

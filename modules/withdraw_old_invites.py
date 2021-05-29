@@ -27,6 +27,7 @@ for invite_page in range(int(invites_count / 100) + 1, 0, -1):
     cards_count = len(page.get_invite_cards_count())
     for invite_card in range(cards_count, 0, -1):
         if "month" in page.get_invite_age(invite_card):
+            page.scroll_to_bottom()
             page.withdraw_invite(invite_card)
 page.close_browser()
 simplefilter("ignore", ResourceWarning)
