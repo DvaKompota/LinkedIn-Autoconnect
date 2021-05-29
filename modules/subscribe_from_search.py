@@ -1,6 +1,7 @@
 from pages.search_page import SearchPage
 from modules.base import get_data
 from modules.login import login
+from warnings import simplefilter
 
 
 data = get_data()
@@ -24,3 +25,4 @@ for company in data["search_list"]:
             invites_sent = page.send_invites(company, invites_sent, data["per_company_limit"], connection_level=3)
         page.go_to_next_search_page(search_pages_count)
 page.close_browser()
+simplefilter("ignore", ResourceWarning)
