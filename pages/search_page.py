@@ -34,15 +34,16 @@ class SearchPage(BasePage):
 
     dialog_locator = '//div[@role="dialog"]'
     dialog_heading_locator = f'{dialog_locator}//div[contains(@class, "modal__header")]'
-    more_than_most_text = "You've sent more invitations than most"
-    close_to_limit_text = "You're close to the weekly invitation limit"
-    reached_limit_text = "You’ve reached the weekly invitation limit"
+    nice_job_text = "Nice job building your network!"
+    more_than_text = "You've sent more invitations than most"
+    close_to_text = "You're close to the weekly invitation limit"
+    limit_text = "You’ve reached the weekly invitation limit"
     send_button_locator = f'{dialog_locator}//button/*[text()="Send"]/..'
     add_note_button_locator = f'{dialog_locator}//button/*[text()="Add a note"]/..'
     got_it_button_locator = f'{dialog_locator}//button/*[text()="Got it"]/..'
     dismiss_button_locator = f'{dialog_locator}//button[contains(@class, "dismiss")]'
 
-    current_page_locator = '//button[contains(@aria-label, "current page")]/..'
+    current_page_locator = '//button[@aria-current="true"]/..'
     pagination_li_locator = '//li[@data-test-pagination-page-btn]'
     pagination_button_locator = f'{pagination_li_locator}/button'
     pagination_dots_button_locator = f'//li/button/span[.="…"]/..'
@@ -152,14 +153,14 @@ class SearchPage(BasePage):
             if self.is_displayed(self.dialog_locator):
                 break
         if self.is_displayed(self.dialog_locator):
-            heading_text = self.get_element_text(self.dialog_heading_locator)
-            if self.reached_limit_text in heading_text:
+            heading = self.get_element_text(self.dialog_heading_locator)
+            if self.limit_text in heading:
                 self.close_browser()
                 print("I'm deeply sorry, my Lord, but we've reached the weekly invitation limit. Let's wait 1 week.")
-            elif self.more_than_most_text in heading_text or self.close_to_limit_text in heading_text:
+            elif self.nice_job_text in heading or self.more_than_text in heading or self.close_to_text in heading:
                 self.click(self.got_it_button_locator)
                 self.wait_element_not_displayed(self.dialog_locator)
-            elif "Connect" in heading_text:
+            elif "Connect" in heading:
                 self.click(self.dismiss_button_locator)
                 self.wait_element_not_displayed(self.dialog_locator)
             else:
