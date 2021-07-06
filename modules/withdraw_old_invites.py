@@ -28,6 +28,9 @@ for invite_page in range(int(invites_count / 100) + 1, 0, -1):
     for invite_card in range(cards_count, 0, -1):
         if "month" in page.get_invite_age(invite_card):
             page.scroll_to_bottom()
+            invite_name = page.get_invite_name(invite_card)
             page.withdraw_invite(invite_card)
+            print(f"Invitation to {invite_name} was withdrawn")
+            page.add_to_blacklist(invite_name)
 page.close_browser()
 simplefilter("ignore", ResourceWarning)

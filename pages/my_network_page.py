@@ -13,6 +13,7 @@ class MyNetworkPage(BasePage):
     events_button = '//button[contains(., "Events")]'
     invitation_card = '//li[contains(@class, "invitation-card")]'
     invitation_age = '//time'
+    invitation_name = '//*[contains(@class, "invitation-card__title")]'
     withdraw_button = '//button[@data-control-name="withdraw_single"]'
     withdraw_dialog = '//*[@data-test-modal]'
     dialog_withdraw_button = f'{withdraw_dialog}//button//span[text()="Withdraw"]'
@@ -29,6 +30,11 @@ class MyNetworkPage(BasePage):
         locator = f'({card}){self.invitation_age}'
         return self.get_element_text(locator)
 
+    def get_invite_name(self, card_no):
+        card = f'{self.invitation_card}[{card_no}]'
+        locator = f'({card}){self.invitation_name}'
+        return self.get_element_text(locator)
+
     def get_invite_cards_count(self):
         return self.driver.find_elements_by_xpath(self.get_element(self.invitation_card))
 
@@ -40,3 +46,13 @@ class MyNetworkPage(BasePage):
         self.wait_element_displayed(self.dialog_withdraw_button)
         self.click(self.dialog_withdraw_button)
         self.wait_element_displayed(self.withdraw_success)
+
+    def add_to_blacklist(self, invite_name):
+        file = open("../data/blacklist.txt", "r+")
+        lines = file.readlines()
+        blacklisted = []
+        for line in lines:
+            line = line.replace("\n", "")
+            blacklisted.append(line)
+        file.write(f'{invite_name}\n') if invite_name not in blacklisted else None
+        file.close()
