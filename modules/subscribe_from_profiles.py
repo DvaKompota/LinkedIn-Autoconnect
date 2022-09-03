@@ -34,10 +34,10 @@ for company in data["search_list"]:
             if people_shown is False:
                 page.go_back()
                 page = SearchPage(data)
-                break
-            invites_sent = page.send_invites(company, invites_sent, data["per_company_limit"], connection_level=2)
+                continue
+            invites_sent = page.send_invites(company, invites_sent, data, connection_level=2)
             if data["connection_level"] == 3:
-                invites_sent = page.send_invites(company, invites_sent, data["per_company_limit"], connection_level=3)
+                invites_sent = page.send_invites(company, invites_sent, data, connection_level=3)
             page.go_back()
             page = SearchPage(data)
 page.close_browser()

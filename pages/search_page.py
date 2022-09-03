@@ -1,3 +1,4 @@
+from selenium.webdriver.common.by import By
 from pages.base_page import BasePage
 from selenium.webdriver.common.keys import Keys
 from time import time
@@ -67,8 +68,8 @@ class SearchPage(BasePage):
         self.click(self.company_reset_button) if self.is_displayed(self.company_reset_button) else None
         self.enter_text(self.add_company_input, company_name)
         sleep(1)
-        self.driver.find_element_by_xpath(self.get_element(self.add_company_input)).send_keys(Keys.DOWN)
-        self.driver.find_element_by_xpath(self.get_element(self.add_company_input)).send_keys(Keys.ENTER)
+        self.driver.find_element(By.XPATH, self.get_element(self.add_company_input)).send_keys(Keys.DOWN)
+        self.driver.find_element(By.XPATH, self.get_element(self.add_company_input)).send_keys(Keys.ENTER)
         self.wait_element_displayed(self.company_show_results_button)
         self.click(self.company_show_results_button)
 
@@ -91,7 +92,7 @@ class SearchPage(BasePage):
             return pages_count
 
     def get_people_count(self):
-        return len(self.driver.find_elements_by_xpath(self.get_element(self.search_result_card_locator)))
+        return len(self.driver.find_elements(By.XPATH, self.get_element(self.search_result_card_locator)))
 
     def get_results_count(self):
         results_string = self.get_element_text(self.search_results_quantity_locator).replace(",", "")
@@ -104,16 +105,16 @@ class SearchPage(BasePage):
         else:
             end_time = time() + self.driver_wait
             while time() < end_time:
-                cards_count = len(self.driver.find_elements_by_xpath(self.get_element(self.search_result_card_locator)))
+                cards_count = len(self.driver.find_elements(By.XPATH, self.get_element(self.search_result_card_locator)))
                 if cards_count >= 10:
                     self.wait_element_displayed(f'{self.search_result_card_locator}[10]')
                     sleep(0.5)
                     break
 
-    def send_invites(self, company, invites_sent, invites_limit, connection_level):
-        cards_count = len(self.driver.find_elements_by_xpath(self.get_element(self.search_result_card_locator)))
+    def send_invites(self, company, invites_sent, data, connection_level):
+        cards_count = len(self.driver.find_elements(By.XPATH, self.get_element(self.search_result_card_locator)))
         for card in range(1, cards_count + 1):
-            if invites_sent == invites_limit:
+            if invites_sent == data["per_company_limit"]:
                 return invites_sent
             current_card = f'{self.search_result_card_locator}[{card}]'
             connection_circle_badge = f'({current_card}){self.connection_circle_locator}'
@@ -121,10 +122,13 @@ class SearchPage(BasePage):
             connect_button = f'({current_card}){self.connect_button_locator}'
             connection_level_text = self.circle_3_text if connection_level == 3 else self.circle_2_text
             if self.is_displayed(connect_button):
-                badge_text = self.get_element_text(connection_circle_badge)
-                title_and_company_text = self.get_element_text(title_and_company)
+                badge_text = self.get_element_text(connection_circle_badge).lower()
+                title_and_company_text = self.get_element_text(title_and_company).lower()
                 connection_name = self.get_element_text(f'({current_card}){self.name_on_card}')
-                if connection_level_text in badge_text and company in title_and_company_text:
+                company_is_desired = company.lower() in title_and_company_text
+                title_is_desired = any([title.lower() in title_and_company_text for title in data["job_titles"]])
+                connection_level_is_correct = connection_level_text.lower() in badge_text
+                if connection_level_is_correct and company_is_desired and title_is_desired:
                     self.click(connect_button)
                     self.wait_element_displayed(self.dialog_locator)
                     self.click(self.send_button_locator)

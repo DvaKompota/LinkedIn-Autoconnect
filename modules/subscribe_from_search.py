@@ -20,9 +20,9 @@ for company in data["search_list"]:
             print(f'Already sent {invites_sent} invites to {company} employees which is maximum for one company')
             break
         page.wait_all_people_loaded(page_no, search_pages_count)
-        invites_sent = page.send_invites(company, invites_sent, data["per_company_limit"], connection_level=2)
+        invites_sent = page.send_invites(company, invites_sent, data, connection_level=2)
         if data["connection_level"] == 3:
-            invites_sent = page.send_invites(company, invites_sent, data["per_company_limit"], connection_level=3)
+            invites_sent = page.send_invites(company, invites_sent, data, connection_level=3)
         page.go_to_next_search_page(search_pages_count)
 page.close_browser()
 simplefilter("ignore", ResourceWarning)
