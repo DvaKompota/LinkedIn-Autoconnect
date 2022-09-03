@@ -4,7 +4,7 @@ from pages.search_page import SearchPage
 
 class ProfilePage(SearchPage):
 
-    people_also_viewed_section = '//*[@class="pv-browsemap-section"]'
+    people_also_viewed_section = '//*[.="People also viewed"]/ancestor::section[contains(@class, "artdeco")]'
     show_more_button = '//button//*[text()="Show more"]'
 
     search_result_card_locator = f'{people_also_viewed_section}//li[contains(@class, "member")]'
@@ -15,7 +15,7 @@ class ProfilePage(SearchPage):
 
     def show_more_people_also_viewed(self):
         try:
-            self.wait_element_displayed(f'{self.people_also_viewed_section}')
+            self.wait_element_displayed(f'{self.people_also_viewed_section}', custom_timeout=3)
             button = f'{self.people_also_viewed_section}/..{self.show_more_button}'
             self.scroll_to(100)
             self.click(button)
