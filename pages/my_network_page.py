@@ -1,3 +1,4 @@
+from selenium.webdriver.common.by import By
 from pages.base_page import BasePage
 from time import sleep
 
@@ -36,7 +37,7 @@ class MyNetworkPage(BasePage):
         return self.get_element_text(locator)
 
     def get_invite_cards_count(self):
-        return self.driver.find_elements_by_xpath(self.get_element(self.invitation_card))
+        return self.driver.find_elements(By.XPATH, self.get_element(self.invitation_card))
 
     def withdraw_invite(self, card_no):
         card = f'{self.invitation_card}[{card_no}]'
