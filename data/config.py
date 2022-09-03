@@ -4,19 +4,28 @@ per_company_limit = 10
 driver_wait = 20
 headless = True
 search_list = [
+    "SpaceX",
+    "NASA",
+    "SpinLaunch",
+    "Sierra Space",
     "Relativity Space",
     "Rocket Lab",
-    "SpaceX",
+    "Blue Origin",
     "Tesla",
     "ARRIVAL",
     "Zoox",
     "Rivian",
-    "Cruise auto",
-    "Aurora",
-    "DeepMind",
-    "OpenAI",
+    "Redwood Materials",
     "Neuralink",
+    "Boring Company",
+    "OpenAI",
+    "DeepMind",
     "Boston Dynamics",
     "Waymo",
-    "Apple"
+]
+job_titles = [
+    "Recruiter",
+    "Talent",
+    "Software",
+    "SDET"
 ]
