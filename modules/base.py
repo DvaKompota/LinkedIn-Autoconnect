@@ -1,6 +1,7 @@
 from selenium import webdriver
 from data import config
 from data import credentials
+import chromedriver_autoinstaller
 
 
 def get_data():
@@ -13,11 +14,13 @@ def get_data():
         "connection_level": config.connection_level,
         "per_company_limit": config.per_company_limit,
         "search_list": config.search_list,
+        "job_titles": config.job_titles,
         }
     return data
 
 
 def get_driver(headless=True):
+    chromedriver_autoinstaller.install()
     opts = webdriver.ChromeOptions()
     opts.add_argument("--start-maximized")
     opts.add_argument("--headless") if headless else None
