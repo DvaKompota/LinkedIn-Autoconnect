@@ -24,5 +24,6 @@ def get_driver(headless=True):
     opts = webdriver.ChromeOptions()
     opts.add_argument("--start-maximized")
     opts.add_argument("--headless") if headless else None
+    opts.add_argument("--log-level=1") if headless else None
     driver = webdriver.Chrome(options=opts)
     return driver
