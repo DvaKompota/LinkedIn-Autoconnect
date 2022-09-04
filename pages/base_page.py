@@ -50,7 +50,7 @@ class BasePage:
                 if not self.is_displayed(locator):
                     break
 
-    def wait_element_selected(self, locator, custom_timeout):
+    def wait_element_selected(self, locator, custom_timeout=False):
         timeout = custom_timeout if custom_timeout else self.driver_wait
         end_time = time() + timeout
         while time() < end_time:

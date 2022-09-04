@@ -6,7 +6,7 @@ from time import sleep
 class MyNetworkPage(BasePage):
 
     login_url = "https://www.linkedin.com/"
-    manage_network = '//a[@data-control-name="manage_all_invites"]'
+    manage_network = '//a[@href="/mynetwork/invitation-manager/"]'
     sent_button = '//button[text()="Sent"]'
     settings_button = '//button[@data-control-name="invitation_settings_entrypoint"]'
     people_button = '//button[contains(., "People")]'
@@ -15,10 +15,10 @@ class MyNetworkPage(BasePage):
     invitation_card = '//li[contains(@class, "invitation-card")]'
     invitation_age = '//time'
     invitation_name = '//*[contains(@class, "invitation-card__title")]'
-    withdraw_button = '//button[@data-control-name="withdraw_single"]'
+    withdraw_button = '//button[contains(., "Withdraw")]'
     withdraw_dialog = '//*[@data-test-modal]'
     dialog_withdraw_button = f'{withdraw_dialog}//button//span[text()="Withdraw"]'
-    withdraw_success = '//li//span[text()="Invitation withdrawn"]'
+    withdraw_success = '//*[text()="Invitation withdrawn"]'
 
     def go_to_invites_page(self, page_no):
         locator = f'//li[@data-test-pagination-page-btn="{page_no}"]'

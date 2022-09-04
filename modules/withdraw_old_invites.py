@@ -3,6 +3,7 @@ from pages.my_network_page import MyNetworkPage
 from modules.base import get_data
 from modules.login import login
 from warnings import simplefilter
+from time import sleep
 import re
 
 
@@ -32,5 +33,6 @@ for invite_page in range(int(invites_count / 100) + 1, 0, -1):
             page.withdraw_invite(invite_card)
             print(f"Invitation to {invite_name} was withdrawn")
             page.add_to_blacklist(invite_name)
+            sleep(0.5)
 page.close_browser()
 simplefilter("ignore", ResourceWarning)
