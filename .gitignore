@@ -2,7 +2,16 @@
 pages/__pycache__/
 modules/__pycache__/
 data/__pycache__/
-data/credentials.py
-data/blacklist.txt
 /venv/
 /_dev/
+
+# Credentials
+browser-state
+data/credentials.py
+data/blacklist.txt
+
+# Go build artifacts
+*.exe
+*.out
+*.test
+/bin/
