@@ -9,9 +9,14 @@ data/__pycache__/
 browser-state
 data/credentials.py
 data/blacklist.txt
+data/credentials.yaml
+data/blacklist.yaml
 
 # Go build artifacts
 *.exe
 *.out
 *.test
 /bin/
+
+#Go Playground
+_playground/

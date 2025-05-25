@@ -1,0 +1,17 @@
+search_level: 3
+connection_level: 2
+per_company_limit: 10
+search_list:
+  [
+    "SpaceX",
+    "Neuralink",
+    "Boring Company",
+    "Redwood Materials",
+    "NASA",
+    "SpinLaunch",
+    "Sierra Space",
+    "Relativity Space",
+    "Rocket Lab",
+    "Blue Origin",
+  ]
+job_titles: ["Recruiter", "Talent", "Software", "SDET", "QA Manager", "QA Director"]
