@@ -1,15 +1,19 @@
 package main
 
 import (
-	"os"
+	"log"
 
-	"github.com/DvaKompota/LinkedIn-Autoconnect/internal/browser"
+	"github.com/DvaKompota/LinkedIn-Autoconnect/internal/linkedin"
 )
 
 func main() {
-	if _, err := os.Stat("data/browser-state"); os.IsNotExist(err) {
-		browser.Login()
-	} else {
-		browser.NewBrowser("data/browser-state")
+	a, err := linkedin.NewApp(false, "data/browser-state")
+	if err != nil {
+		log.Fatalf("could not create app: %v", err)
 	}
+	defer a.Close()
+
+	a.LoginPage.Navigate()
+	a.LoginPage.WaitForLoad()
+	a.Sleep(1)
 }
