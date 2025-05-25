@@ -10,7 +10,7 @@ browser-state
 data/credentials.py
 data/blacklist.txt
 data/credentials.yaml
-data/blacklist.yaml
+data/config.yaml
 
 # Go build artifacts
 *.exe

@@ -13,12 +13,13 @@ type LoginPage struct {
 
 // NewLoginPage initializes a new LoginPage object
 func NewLoginPage(page playwright.Page) *LoginPage {
-	return &LoginPage{
-		page:          page,
-		usernameField: page.Locator("#username"),
-		passwordField: page.Locator("#password"),
-		loginButton:   page.Locator("button[type=submit]"),
+	p := &LoginPage{
+		page: page,
 	}
+	p.usernameField = p.page.Locator("#username")         // Username (email) field
+	p.passwordField = p.page.Locator("#password")         // Password field
+	p.loginButton = p.page.Locator("button[type=submit]") // Sign In button
+	return p
 }
 
 // Login fills in the username and password and submits (optional for manual login)

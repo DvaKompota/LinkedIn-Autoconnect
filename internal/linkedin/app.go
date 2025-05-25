@@ -7,8 +7,9 @@ import (
 )
 
 type App struct {
-	Browser   *browser.Browser
-	LoginPage *LoginPage
+	Browser     *browser.Browser
+	Login       *LoginPage
+	Invitations *InvitationsPage
 }
 
 // NewApp creates a new App instance with an initialized browser
@@ -19,8 +20,9 @@ func NewApp(headless bool, statePath string) (*App, error) {
 	}
 	page := b.Page
 	return &App{
-		Browser:   b,
-		LoginPage: NewLoginPage(page),
+		Browser:     b,
+		Login:       NewLoginPage(page),
+		Invitations: NewInvitationsPage(page),
 	}, nil
 }
 
