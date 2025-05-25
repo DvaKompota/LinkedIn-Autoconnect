@@ -48,18 +48,32 @@ func main() {
 	}
 	defer a.Close()
 
-	a.Invitations.Navigate()
-	a.Invitations.WaitForLoad()
-	a.Invitations.OpenSentTab()
-	if err := a.Invitations.WaitForInvitationsCountToBeMoreThan(10); err != nil {
+	// Navigate to the invitations page and wait for invitations to load
+	if err := a.Invitations.Navigate(); err != nil {
+		log.Fatalf("could not navigate to invitations: %v", err)
+	}
+	if err := a.Invitations.WaitForLoad(); err != nil {
+		log.Fatalf("could not wait for invitations to load: %v", err)
+	}
+	if err := a.Invitations.OpenSentTab(); err != nil {
+		log.Fatalf("could not open sent invitations tab: %v", err)
+	}
+	if err := a.Invitations.WaitForInvitationsCountToBeMoreThan(1); err != nil {
 		log.Fatalf("There was less than 10 invitations: %v", err)
 	}
+
+	// Iterate through the invitations and withdraw those older than a month, starting from the bottom
 	count, _ := a.Invitations.CountInvitations()
 	log.Printf("Found %d invitations", count)
-	for i := range count {
-		// TODO: This needs either a scrollToBottom, or another way to see the entire list
-		// otherwise it starts to fail after ~20-23 withdrawals
-		invitation := a.Invitations.GetInvitation(i)
+	if err := a.Invitations.ScrollToBottom(); err != nil {
+		log.Fatalf("could not scroll to bottom: %v", err)
+	}
+	for i := count - 1; i >= 0; i-- {
+		invitation := a.Invitations.GetInvitationLocatorByIndex(i)
+		if err := invitation.ScrollIntoViewIfNeeded(); err != nil {
+			log.Printf("could not scroll invitation %d into view: %v", i, err)
+			continue
+		}
 		name, err := a.Invitations.GetInvitationName(invitation)
 		if err != nil {
 			log.Printf("could not get name for invitation %d: %v", i, err)
@@ -71,6 +85,7 @@ func main() {
 			continue
 		}
 		if strings.Contains(time, "month") {
+			a.Sleep(1) // Slows down the process to avoid being detected as a bot
 			if err := a.Invitations.WithdrawInvitation(invitation); err != nil {
 				log.Printf("could not withdraw invitation %d: %v", i, err)
 			}

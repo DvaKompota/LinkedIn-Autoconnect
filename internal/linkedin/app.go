@@ -19,6 +19,8 @@ func NewApp(headless bool, statePath string) (*App, error) {
 		return nil, err
 	}
 	page := b.Page
+	page.SetDefaultTimeout(10000)
+
 	return &App{
 		Browser:     b,
 		Login:       NewLoginPage(page),

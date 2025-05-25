@@ -89,8 +89,8 @@ func (p *InvitationsPage) CountInvitations() (int, error) {
 	return count, nil
 }
 
-// GetInvitation retrieves the Locator for the specified invitation index
-func (p *InvitationsPage) GetInvitation(index int) playwright.Locator {
+// GetInvitationLocatorByIndex retrieves the Locator for the specified invitation index
+func (p *InvitationsPage) GetInvitationLocatorByIndex(index int) playwright.Locator {
 	return p.invitation.Nth(index)
 }
 
@@ -125,4 +125,10 @@ func (p *InvitationsPage) WithdrawInvitation(invitation playwright.Locator) erro
 		return fmt.Errorf("failed to confirm withdrawal: %w", err)
 	}
 	return nil
+}
+
+// ScrollToBottom scrolls to the bottom of the invitations list
+func (p *InvitationsPage) ScrollToBottom() error {
+	_, err := p.page.Evaluate("window.scrollTo(0, document.body.scrollHeight)")
+	return err
 }
