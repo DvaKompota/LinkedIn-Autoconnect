@@ -1,4 +1,4 @@
-package main
+package config
 
 import (
 	"fmt"
@@ -9,6 +9,7 @@ import (
 
 // Config represents the structure of config.yaml
 type Config struct {
+    path             string   `yaml:"-"` // not marshaled to YAML
     Headless         bool     `yaml:"headless"`
     SearchLevel      int      `yaml:"search_level"`
     ConnectionLevel  int      `yaml:"connection_level"`
@@ -18,7 +19,7 @@ type Config struct {
     Blacklist        []string `yaml:"blacklist"`
 }
 
-func loadConfig(path string) (*Config, error) {
+func LoadConfig(path string) (*Config, error) {
     // Read the file
     data, err := os.ReadFile(path)
     if err != nil {
@@ -26,43 +27,36 @@ func loadConfig(path string) (*Config, error) {
     }
 
     // Unmarshal into the Config struct
-    var config Config
-    err = yaml.Unmarshal(data, &config)
+    var cfg Config
+    err = yaml.Unmarshal(data, &cfg)
     if err != nil {
         return nil, fmt.Errorf("failed to parse config: %v", err)
     }
-
-    return &config, nil
+    cfg.path = path
+    return &cfg, nil
 }
 
-func appendToConfigList(path, listName, name string) error {
-    // Read the current config
-    config, err := loadConfig(path)
-    if err != nil {
-        return err
-    }
-
+func (cfg *Config) AppendToList(listName, name string) error {
     // Append the name to the specified list
     switch listName {
     case "blacklist":
-        config.Blacklist = append(config.Blacklist, name)
+        cfg.Blacklist = append(cfg.Blacklist, name)
     case "search_list":
-        config.SearchList = append(config.SearchList, name)
+        cfg.SearchList = append(cfg.SearchList, name)
     case "job_titles":
-        config.JobTitles = append(config.JobTitles, name)
+        cfg.JobTitles = append(cfg.JobTitles, name)
     default:
         return fmt.Errorf("unsupported list name: %s", listName)
     }
 
     // Write the updated config back to the file
-    data, err := yaml.Marshal(config)
+    data, err := yaml.Marshal(cfg)
     if err != nil {
         return fmt.Errorf("failed to marshal config: %v", err)
     }
-    err = os.WriteFile(path, data, 0644)
+    err = os.WriteFile(cfg.path, data, 0644)
     if err != nil {
         return fmt.Errorf("failed to write config: %v", err)
     }
-
     return nil
 }
