@@ -29,11 +29,21 @@ func NewInvitationsPage(page playwright.Page) *InvitationsPage {
 	}
 	p.url = "https://www.linkedin.com/mynetwork/invitation-manager/"
 	p.header = page.GetByText("Manage invitations")
-	p.received = page.GetByRole(playwright.AriaRole("tab"), playwright.PageGetByRoleOptions{Name: "Received"})
-	p.sent = p.page.GetByRole(playwright.AriaRole("tab"), playwright.PageGetByRoleOptions{Name: "Sent"})
-	p.invitation = page.Locator("ul li.invitation-card")   // Targets each invitation card in the list
-	p.name = p.page.Locator(".invitation-card__tvm-title") // Targets the name within each invitation card
-	p.timeBadge = p.page.Locator(".time-badge")            // Targets the time badge within each invitation card
+
+	// First iteration of locators (keep in case LinkedIn reverts to this strategy)
+	// p.received = page.GetByRole(playwright.AriaRole("tab"), playwright.PageGetByRoleOptions{Name: "Received"})
+	// p.sent = p.page.GetByRole(playwright.AriaRole("tab"), playwright.PageGetByRoleOptions{Name: "Sent"})
+	// p.invitation = page.Locator("ul li.invitation-card")   // Targets each invitation card in the list
+	// p.name = p.page.Locator(".invitation-card__tvm-title") // Targets the name within each invitation card
+	// p.timeBadge = p.page.Locator(".time-badge")            // Targets the time badge within each invitation card
+
+	// Second iteration of locators (currently working)
+	p.received = page.GetByRole(playwright.AriaRole("link"), playwright.PageGetByRoleOptions{Name: "Received"})
+	p.sent = p.page.GetByRole(playwright.AriaRole("link"), playwright.PageGetByRoleOptions{Name: "Sent"})
+	p.invitation = page.Locator(`[componentkey="InvitationManagerPage_InvitationsList"]`).GetByRole("listitem") // Targets each invitation card in the list
+	p.name = p.page.Locator("p a").First()                                                                      // Targets the name within each invitation card
+	p.timeBadge = p.page.GetByText(" ago")                                                                      // Targets the time badge within each invitation card
+
 	p.withdraw = p.page.GetByRole(playwright.AriaRole("button"), playwright.PageGetByRoleOptions{Name: "Withdraw"})
 	p.withdrawDialog = p.page.GetByRole(playwright.AriaRole("alertdialog"), playwright.PageGetByRoleOptions{Name: "Withdraw"})
 	p.confirmWithdraw = p.withdrawDialog.GetByRole(playwright.AriaRole("button"), playwright.LocatorGetByRoleOptions{Name: "Withdraw"})
