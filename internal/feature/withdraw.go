@@ -19,7 +19,7 @@ func WithdrawOldInvitations(a *linkedin.App, cfg *config.Config) {
 	if err := a.Invitations.OpenSentTab(); err != nil {
 		log.Fatalf("could not open sent invitations tab: %v", err)
 	}
-	if err := a.Invitations.WaitForInvitationsCountToBeMoreThan(1); err != nil {
+	if err := a.Invitations.WaitForInvitationsCountToBeMoreThan(10); err != nil {
 		log.Fatalf("There was less than 10 invitations: %v", err)
 	}
 

@@ -10,6 +10,7 @@ type App struct {
 	Browser     *browser.Browser
 	Login       *LoginPage
 	Invitations *InvitationsPage
+	Search      *SearchPage
 }
 
 // NewApp creates a new App instance with an initialized browser
@@ -25,11 +26,12 @@ func NewApp(headless bool, statePath string) (*App, error) {
 		Browser:     b,
 		Login:       NewLoginPage(page),
 		Invitations: NewInvitationsPage(page),
+		Search:      NewSearchPage(page),
 	}, nil
 }
 
 // Sleep pauses execution for the specified number of seconds
-func (a *App) Sleep(duration int) {
+func (a *App) Sleep(duration float64) {
 	time.Sleep(time.Duration(duration) * time.Second)
 }
 

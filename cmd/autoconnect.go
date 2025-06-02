@@ -50,5 +50,6 @@ func main() {
 	defer a.Close()
 
     // Call the feature
-    feature.WithdrawOldInvitations(a, cfg)
+    // feature.WithdrawOldInvitations(a, cfg)
+    feature.InviteFromSearch(a, cfg)
 }
