@@ -79,20 +79,22 @@ go build -o bin/autoconnect cmd/autoconnect.go
 
 ## Configuration
 
-The app uses YAML config files. **Config files are gitignored** - create your own:
+The app uses YAML config files. **Personal configs are gitignored** - create from template:
 
 ```bash
-# Copy template and customize
-cp data/config.yaml data/config.dev.yaml
+# Copy example config and customize
+cp data/config.yaml.example data/config.yaml
 ```
+
+Edit `data/config.yaml` with your target companies, job titles, and preferences.
 
 ### Config Structure
 
 ```yaml
-# data/config.yaml or data/config.dev.yaml
+# data/config.yaml
 
 headless: true              # Run browser in headless mode
-search_level: 3             # LinkedIn search depth (1=1st, 2=2nd, 3=all connections)
+search_level: 2             # LinkedIn search depth (1=1st, 2=2nd, 3=all connections)
 connection_level: 2         # Target connection level
 per_company_limit: 10       # Max invites per company per run
 
@@ -100,15 +102,18 @@ search_list:                # Companies to target
     - Tesla
     - SpaceX
     - Neuralink
+    - Boring Company
 
 job_titles:                 # Filter by job titles (partial match, case-insensitive)
     - Recruiter
-    - Talent Acquisition
-    - Software Engineer
+    - Talent
+    - Software
 
 blacklist:                  # Names to skip (exact match)
-    - John Doe
+    - Adolf Hitler
 ```
+
+**Note:** `search_level` and `connection_level` may be redundant. See [ROADMAP.md](docs/ROADMAP.md) for ongoing evaluation.
 
 ### Config Fields
 

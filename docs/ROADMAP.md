@@ -75,6 +75,10 @@ This roadmap outlines planned improvements and features for the Go implementatio
 - [ ] Replace `Withdraw()` with log statement in dry-run mode
 - [ ] All page navigation and locators execute normally
 - [ ] Add dry-run indicator to logs
+- [ ] Override config settings in dry-run mode for safety and speed:
+  - `per_company_limit: 1-2` (speed up testing)
+  - `search_level: 3` and `connection_level: 3` (works for everyone, no dependency on real connections)
+  - `headless: false` (visual confirmation, up for debate)
 
 **Usage:**
 ```bash
@@ -92,6 +96,7 @@ go run cmd/autoconnect.go --feature withdraw --dry-run
 - Can validate entire workflow without side effects
 - Catches locator breakage immediately
 - Safe to run frequently to detect LinkedIn UI changes
+- Config overrides make it fast and universally runnable
 
 ---
 
@@ -137,6 +142,38 @@ count, _ := a.Invitations.CountInvitations()  // Line 27
 - [ ] Return clear error messages
 
 **Impact:** Fails fast with clear errors instead of silent no-ops
+
+---
+
+### 🟡 4.5. Evaluate `search_level` vs `connection_level` Configuration
+**Priority:** MEDIUM | **Effort:** Small | **Status:** Analysis Needed
+
+**Problem:** Two similar config fields that may be redundant or poorly named.
+
+**Current State:**
+- `search_level`: LinkedIn search depth (1=1st circle, 2=2nd circle, 3=all)
+- `connection_level`: Target connection level
+
+**Questions:**
+- Are both necessary or is this redundant?
+- Should they serve different purposes for different features?
+  - `search_level` for `invite` (search-based invites)
+  - `connection_level` for `profiles` (profile-based invites)
+- Should naming be more explicit if they serve different purposes?
+
+**Potential Use Case:**
+- Search and invite only 2nd-degree from search (`search_level: 2`)
+- But invite everyone (2nd/3rd) from profiles (`connection_level: 3`)
+- Or vice versa
+
+**Tasks:**
+- [ ] Analyze Python implementation usage
+- [ ] Determine if both are needed
+- [ ] Rename for clarity if they serve different purposes
+- [ ] Consolidate if redundant
+- [ ] Update docs with final decision
+
+**Impact:** Clearer configuration, less confusion
 
 ---
 

@@ -117,30 +117,39 @@ go run cmd/autoconnect.go --feature invite    # Send invites (default)
 
 ### Configuration
 
-**Config files are gitignored** - `data/config.yaml` is in `.gitignore`. Create your own local copy:
+**Personal configs are gitignored** - Create your config from the example template:
 
 ```bash
-# Copy the template from the repo (if it exists) or create from scratch
-cp data/config.yaml data/config.dev.yaml  # For local development
-# Edit your local config
+# Copy example config and customize
+cp data/config.yaml.example data/config.yaml
+# Edit data/config.yaml with your settings
 ```
 
-Config structure (`data/config.yaml` or `data/config.dev.yaml`):
+**Config files:**
+- `data/config.yaml.example` - Committed template with example values
+- `data/config.yaml` - Your personal config (gitignored, not committed)
+
+Config structure:
 
 ```yaml
 headless: true              # Run browser in headless mode
-search_level: 3             # LinkedIn search depth (1=1st circle, 2=2nd circle, 3=all)
+search_level: 2             # LinkedIn search depth (1=1st circle, 2=2nd circle, 3=all)
 connection_level: 2         # Target connection level
 per_company_limit: 10       # Max invites per company
 search_list:                # Companies to target
     - Tesla
     - SpaceX
+    - Neuralink
+    - Boring Company
 job_titles:                 # Filter by job titles (partial match)
     - Recruiter
+    - Talent
     - Software
-blacklist:                  # Names to skip
-    - John Doe
+blacklist:                  # Names to skip (exact match)
+    - Adolf Hitler
 ```
+
+**Note on `search_level` vs `connection_level`:** These fields may be redundant or serve different purposes for different features. Under evaluation - see [ROADMAP.md item 4.5](docs/ROADMAP.md#-45-evaluate-search_level-vs-connection_level-configuration).
 
 **Programmatic config updates**: Use `config.AppendToList()` to add items to `search_list`, `job_titles`, or `blacklist` at runtime. Changes are persisted back to the YAML file.
 

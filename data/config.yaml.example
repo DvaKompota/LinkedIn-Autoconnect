@@ -1,0 +1,27 @@
+# LinkedIn Autoconnect Configuration
+# Copy this file to config.yaml and customize for your use
+
+headless: true              # Run browser in headless mode (false = visible for debugging)
+search_level: 2             # LinkedIn search depth (1=1st circle, 2=2nd circle, 3=all)
+connection_level: 2         # Target connection level (typically same as search_level)
+per_company_limit: 10       # Max invites per company per run
+
+search_list:                # Companies to target
+    - Tesla
+    - SpaceX
+    - Neuralink
+    - Boring Company
+
+job_titles:                 # Filter by job titles (partial match, case-insensitive)
+    - Recruiter
+    - Talent
+    - Software
+
+blacklist:                  # Names to skip (exact match)
+    - Adolf Hitler
+
+# NOTE: search_level vs connection_level discrepancy
+# These may be redundant or serve different purposes:
+# - search_level: Used for search-based invites (feature: invite)
+# - connection_level: Used for profile-based invites (feature: profiles)
+# This needs further evaluation - see ROADMAP.md
