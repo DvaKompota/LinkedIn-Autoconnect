@@ -47,7 +47,9 @@ func InviteFromSearch(a *linkedin.App, cfg *config.Config) {
 		}
 
 		connected := 0
+		pagesProcessed := 0
 		for connected < cfg.PerCompanyLimit {
+			pagesProcessed++
 
 			// Iterate through the contact cards and connect with people who meet invitation criteria
 			if err := a.Search.WaitForPeopleCountToBeMoreThan(0); err != nil {
@@ -84,20 +86,27 @@ func InviteFromSearch(a *linkedin.App, cfg *config.Config) {
 				// If the contact matches all the criteria, connect with them
 				if canConnect && !blacklisted && titleMatches {
 					a.Sleep(1 + rand.Float64()) // Slows down the process to avoid being detected as a bot
-					if err := contactCard.Connect(); err != nil {
+					if err := contactCard.Connect(a.DryRun); err != nil {
 						log.Printf("could not connect with %s: %v", contactCard.Name, err)
 						continue
 					}
-					if err := a.Search.Confirm(); err != nil {
-						log.Printf("could not confirm connection with %s: %v", contactCard.Name, err)
-						continue
+					if !a.DryRun {
+						if err := a.Search.Confirm(); err != nil {
+							log.Printf("could not confirm connection with %s: %v", contactCard.Name, err)
+							continue
+						}
+						log.Printf("Connected with %s (%s) from %s", contactCard.Name, contactCard.Title, company)
 					}
-					log.Printf("Connected with %s (%s) from %s", contactCard.Name, contactCard.Title, company)
 					connected++
 				} else {
 					log.Printf("Skipping %s (%s) from %s - canConnect: %t, blacklisted: %t, titleMatches: %t",
 						contactCard.Name, contactCard.Title, company, canConnect, blacklisted, titleMatches)
 				}
+			}
+
+			if a.DryRun && pagesProcessed >= 2 {
+				log.Printf("[DRY-RUN] Processed 2 pages for %s, moving to next company", company)
+				break
 			}
 
 			// Check if there are more pages of search results to process

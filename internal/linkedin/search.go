@@ -2,6 +2,7 @@ package linkedin
 
 import (
 	"fmt"
+	"log"
 	"strings"
 	"time"
 
@@ -32,9 +33,6 @@ type SearchPage struct {
 	previousButton        playwright.Locator
 	nextButton            playwright.Locator
 }
-
-//   var previousButton = await page.getByRole('button', {name: "Previous"})
-//   var nextButton = await page.getByRole('button', {name: "Next"})
 
 type ContactCard struct {
 	locator       playwright.Locator
@@ -267,13 +265,19 @@ func (c *ContactCard) TitleMatches(cfg *config.Config) bool {
 	return false
 }
 
-func (c *ContactCard) Connect() error {
+func (c *ContactCard) Connect(dryRun bool) error {
 	if c == nil {
 		return fmt.Errorf("contact card is nil")
 	}
 	if !c.CanConnect {
 		return fmt.Errorf("cannot connect with %s, button not visible", c.Name)
 	}
+
+	if dryRun {
+		log.Printf("[DRY-RUN] Would send invite to %s (%s)", c.Name, c.Title)
+		return nil
+	}
+
 	if err := c.connectButton.Click(); err != nil {
 		return fmt.Errorf("failed to click connect button for %s: %w", c.Name, err)
 	}

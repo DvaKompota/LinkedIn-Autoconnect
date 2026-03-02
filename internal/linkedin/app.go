@@ -11,10 +11,11 @@ type App struct {
 	Login       *LoginPage
 	Invitations *InvitationsPage
 	Search      *SearchPage
+	DryRun      bool
 }
 
 // NewApp creates a new App instance with an initialized browser
-func NewApp(headless bool, statePath string) (*App, error) {
+func NewApp(headless bool, statePath string, dryRun bool) (*App, error) {
 	b, err := browser.NewBrowser(headless, statePath)
 	if err != nil {
 		return nil, err
@@ -27,6 +28,7 @@ func NewApp(headless bool, statePath string) (*App, error) {
 		Login:       NewLoginPage(page),
 		Invitations: NewInvitationsPage(page),
 		Search:      NewSearchPage(page),
+		DryRun:      dryRun,
 	}, nil
 }
 

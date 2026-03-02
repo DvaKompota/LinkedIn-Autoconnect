@@ -2,6 +2,8 @@ package linkedin
 
 import (
 	"fmt"
+	"log"
+	"math/rand"
 	"time"
 
 	"github.com/playwright-community/playwright-go"
@@ -16,6 +18,7 @@ type InvitationsPage struct {
 	invitation            playwright.Locator
 	name                  playwright.Locator
 	timeBadge             playwright.Locator
+	loadMore              playwright.Locator
 	withdraw              playwright.Locator
 	withdrawDialog        playwright.Locator
 	confirmWithdraw       playwright.Locator
@@ -30,19 +33,12 @@ func NewInvitationsPage(page playwright.Page) *InvitationsPage {
 	p.url = "https://www.linkedin.com/mynetwork/invitation-manager/"
 	p.header = page.GetByText("Manage invitations")
 
-	// First iteration of locators (keep in case LinkedIn reverts to this strategy)
-	// p.received = page.GetByRole(playwright.AriaRole("tab"), playwright.PageGetByRoleOptions{Name: "Received"})
-	// p.sent = p.page.GetByRole(playwright.AriaRole("tab"), playwright.PageGetByRoleOptions{Name: "Sent"})
-	// p.invitation = page.Locator("ul li.invitation-card")   // Targets each invitation card in the list
-	// p.name = p.page.Locator(".invitation-card__tvm-title") // Targets the name within each invitation card
-	// p.timeBadge = p.page.Locator(".time-badge")            // Targets the time badge within each invitation card
-
-	// Second iteration of locators (currently working)
-	p.received = page.GetByRole(playwright.AriaRole("link"), playwright.PageGetByRoleOptions{Name: "Received"})
-	p.sent = p.page.GetByRole(playwright.AriaRole("link"), playwright.PageGetByRoleOptions{Name: "Sent"})
-	p.invitation = page.Locator(`[componentkey="InvitationManagerPage_InvitationsList"]`).GetByRole("listitem") // Targets each invitation card in the list
-	p.name = p.page.Locator("p a").First()                                                                      // Targets the name within each invitation card
-	p.timeBadge = p.page.GetByText(" ago")                                                                      // Targets the time badge within each invitation card
+	p.received = page.GetByRole(playwright.AriaRole("button"), playwright.PageGetByRoleOptions{Name: "Received"})
+	p.sent = p.page.GetByRole(playwright.AriaRole("button"), playwright.PageGetByRoleOptions{Name: "Sent"})
+	p.invitation = page.GetByTestId("lazy-column").GetByRole("listitem")
+	p.name = p.page.Locator("p a").First()
+	p.timeBadge = p.page.GetByText(" ago")
+	p.loadMore = p.page.GetByRole(playwright.AriaRole("button"), playwright.PageGetByRoleOptions{Name: "Load more"})
 
 	p.withdraw = p.page.GetByRole(playwright.AriaRole("button"), playwright.PageGetByRoleOptions{Name: "Withdraw"})
 	p.withdrawDialog = p.page.GetByRole(playwright.AriaRole("alertdialog"), playwright.PageGetByRoleOptions{Name: "Withdraw"})
@@ -123,8 +119,22 @@ func (p *InvitationsPage) GetInvitationTime(invitation playwright.Locator) (stri
 }
 
 // WithdrawInvitation clicks the Withdraw button for the specified invitation Locator
-func (p *InvitationsPage) WithdrawInvitation(invitation playwright.Locator) error {
+func (p *InvitationsPage) WithdrawInvitation(invitation playwright.Locator, name string, dryRun bool) error {
 	withdrawButton := invitation.Locator(p.withdraw)
+
+	// Validate button exists (runs in both modes)
+	if err := withdrawButton.WaitFor(playwright.LocatorWaitForOptions{
+		State:   playwright.WaitForSelectorStateVisible,
+		Timeout: playwright.Float(1000),
+	}); err != nil {
+		return fmt.Errorf("withdraw button not found: %w", err)
+	}
+
+	if dryRun {
+		log.Printf("[DRY-RUN] Would withdraw invitation for %s", name)
+		return nil
+	}
+
 	if err := withdrawButton.Click(); err != nil {
 		return fmt.Errorf("failed to click withdraw button: %w", err)
 	}
@@ -133,6 +143,27 @@ func (p *InvitationsPage) WithdrawInvitation(invitation playwright.Locator) erro
 	}
 	if err := p.confirmWithdraw.Click(); err != nil {
 		return fmt.Errorf("failed to confirm withdrawal: %w", err)
+	}
+	return nil
+}
+
+// LoadAllInvitations clicks "Load more" button until all invitations are loaded
+func (p *InvitationsPage) LoadAllInvitations() error {
+	maxClicks := 50
+	for i := 0; i < maxClicks; i++ {
+		err := p.loadMore.WaitFor(playwright.LocatorWaitForOptions{
+			State:   playwright.WaitForSelectorStateVisible,
+			Timeout: playwright.Float(5000),
+		})
+		if err != nil {
+			break
+		}
+
+		if err := p.loadMore.Click(); err != nil {
+			return fmt.Errorf("failed to click load more: %w", err)
+		}
+
+		time.Sleep(time.Duration(1000+rand.Intn(1000)) * time.Millisecond)
 	}
 	return nil
 }
