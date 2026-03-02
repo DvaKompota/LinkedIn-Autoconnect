@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"log"
 	"os"
 
@@ -11,9 +12,13 @@ import (
 )
 
 func main() {
+	// Parse command-line flags
+	configPath := flag.String("config", "data/config.yaml", "Path to config YAML file")
+	featureName := flag.String("feature", "invite", "Feature to run: invite or withdraw")
+	flag.Parse()
+
 	statePath := "data/browser-state"
-	configPath := "data/config.yaml"
-	cfg, err := config.LoadConfig(configPath)
+	cfg, err := config.LoadConfig(*configPath)
 	if err != nil {
 		log.Fatalf("could not load config: %v", err)
 	}
@@ -49,7 +54,13 @@ func main() {
 	}
 	defer a.Close()
 
-    // Call the feature
-    // feature.WithdrawOldInvitations(a, cfg)
-    feature.InviteFromSearch(a, cfg)
+	// Execute selected feature
+	switch *featureName {
+	case "invite":
+		feature.InviteFromSearch(a, cfg)
+	case "withdraw":
+		feature.WithdrawOldInvitations(a, cfg)
+	default:
+		log.Fatalf("Unknown feature: %s. Valid options: invite, withdraw", *featureName)
+	}
 }
