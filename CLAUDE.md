@@ -23,17 +23,17 @@ LinkedIn-Autoconnect/
 ├── modules/               # Python scripts (legacy)
 ├── pages/                 # Python page objects (legacy)
 ├── data/                  # Config files, browser state (gitignored)
-├── docs/                  # Project documentation
-│   └── completed/         # Completed implementation plans
 ├── README.md              # Public-facing documentation
-└── CLAUDE.md             # AI development guide (this file)
+├── CLAUDE.md              # AI development guide (this file)
+├── CHANGELOG.md           # What shipped and when
+└── ROADMAP.md             # Planned features and priorities
 ```
 
 **Documentation Structure:**
 - [README.md](README.md) - User-facing documentation for GitHub
-- [CLAUDE.md](CLAUDE.md) - Comprehensive AI development guide
-- [docs/completed/](docs/completed/) - Archived completed feature plans
-  - [cli-flags-plan.md](docs/completed/cli-flags-plan.md) - CLI flags implementation details
+- [CLAUDE.md](CLAUDE.md) - AI development guide (this file)
+- [CHANGELOG.md](CHANGELOG.md) - What shipped and when
+- [ROADMAP.md](ROADMAP.md) - Planned features and priorities
 
 ## Go Implementation (Current)
 
@@ -100,6 +100,10 @@ go run cmd/autoconnect.go --config data/config.dev.yaml
 go run cmd/autoconnect.go --feature withdraw  # Withdraw old invitations
 go run cmd/autoconnect.go --feature invite    # Send invites (default)
 
+# Dry-run: validate locators without side effects
+go run cmd/autoconnect.go --feature invite --dry-run
+go run cmd/autoconnect.go --feature withdraw --dry-run
+
 # Run from built binary
 ./bin/autoconnect --feature invite
 ```
@@ -114,6 +118,7 @@ go run cmd/autoconnect.go --feature invite    # Send invites (default)
 |------|---------|-------------|
 | `--config` | `data/config.yaml` | Path to YAML config file |
 | `--feature` | `invite` | Feature to run: `invite` or `withdraw` |
+| `--dry-run` | `false` | Validate workflow without sending invites or withdrawing |
 
 ### Configuration
 
@@ -149,7 +154,7 @@ blacklist:                  # Names to skip (exact match)
     - Adolf Hitler
 ```
 
-**Note on `search_level` vs `connection_level`:** These fields may be redundant or serve different purposes for different features. Under evaluation - see [ROADMAP.md item 4.5](docs/ROADMAP.md#-45-evaluate-search_level-vs-connection_level-configuration).
+**Note on `search_level` vs `connection_level`:** These fields may be redundant or serve different purposes for different features. Under evaluation - see [ROADMAP.md item 4.5](ROADMAP.md#-45-evaluate-search_level-vs-connection_level-configuration).
 
 **Programmatic config updates**: Use `config.AppendToList()` to add items to `search_list`, `job_titles`, or `blacklist` at runtime. Changes are persisted back to the YAML file.
 
@@ -288,3 +293,12 @@ LinkedIn frequently changes their UI. When locators break:
 - **Python**: Update locator strings in `pages/*_page.py`
 
 Look for CSS selectors, XPath expressions, or text-based locators that may need updating.
+
+### After Completing a Feature
+
+When a feature is implemented and committed:
+
+1. **CHANGELOG.md** — Add entry under `[Unreleased]` describing what shipped
+2. **ROADMAP.md** — Remove the completed item (or check it off in milestones)
+3. **README.md** — Update CLI flags table, examples, and feature descriptions if affected
+4. **CLAUDE.md** — Update CLI flags table and any implementation notes if affected

@@ -113,7 +113,7 @@ blacklist:                  # Names to skip (exact match)
     - Adolf Hitler
 ```
 
-**Note:** `search_level` and `connection_level` may be redundant. See [ROADMAP.md](docs/ROADMAP.md) for ongoing evaluation.
+**Note:** `search_level` and `connection_level` may be redundant. See [ROADMAP.md](ROADMAP.md) for ongoing evaluation.
 
 ### Config Fields
 
@@ -133,6 +133,7 @@ blacklist:                  # Names to skip (exact match)
 |------|---------|-------------|
 | `--config` | `data/config.yaml` | Path to YAML config file |
 | `--feature` | `invite` | Feature to run: `invite` or `withdraw` |
+| `--dry-run` | `false` | Validate workflow without sending invites or withdrawing |
 
 ### Examples
 
@@ -145,6 +146,9 @@ go run cmd/autoconnect.go --config data/config.dev.yaml
 
 # Withdraw old invitations
 go run cmd/autoconnect.go --feature withdraw
+
+# Dry-run: validate locators without side effects
+go run cmd/autoconnect.go --feature invite --dry-run
 
 # Help
 go run cmd/autoconnect.go --help
@@ -244,54 +248,23 @@ echo 'password = "your_password"' >> data/credentials.py
 
 ## Project Documentation
 
-- **[CLAUDE.md](CLAUDE.md)** - Comprehensive guide for AI-assisted development
-- **[ROADMAP.md](docs/ROADMAP.md)** - Project roadmap and planned features
-- **[docs/completed/](docs/completed/)** - Completed feature implementation plans
-  - [CLI Flags Implementation Plan](docs/completed/cli-flags-plan.md)
+| Document | Purpose |
+|----------|---------|
+| [CHANGELOG.md](CHANGELOG.md) | What shipped and when |
+| [ROADMAP.md](ROADMAP.md) | Planned features and priorities |
+| [CLAUDE.md](CLAUDE.md) | AI-assisted development guide |
 
 ## Roadmap
 
-**Current Version:** 0.1.0 (Personal Tool)
-- ✅ 2 of 3 core features complete
-- ⚠️ Missing: Invite from profiles (search limit workaround)
+**Next up:** Implement "Invite from Profiles" — the workaround for when LinkedIn search limits are hit. See [ROADMAP.md](ROADMAP.md) for full details.
 
-See **[Full Roadmap](docs/ROADMAP.md)** for detailed planning and implementation notes.
+### Why Multiple Features Exist
 
-### Critical Priority: Feature Parity with Python
+LinkedIn limits search for 2nd/3rd-degree connections. The app has three strategies:
 
-**Goal:** Complete Go implementation, then sunset Python version.
-
-🔴 **1. Implement "Invite from Profiles" Feature**
-- **Why:** LinkedIn limits search results for 2nd/3rd-degree connections
-- **What:** When search limit hit, browse 1st-degree profiles and invite from "People also viewed" section
-- **Status:** Not started (Python reference: `modules/subscribe_from_profiles.py`)
-
-🔴 **2. Add Dry-Run Mode**
-- **Why:** LinkedIn UI changes frequently, breaking locators
-- **What:** `--dry-run` flag to test workflow without sending invites
-- **Use case:** Catch UI breakage before production runs
-
-### Next Release: v0.2.0 - Feature Parity
-
-- ✅ Implement "Invite from Profiles"
-- ✅ Add dry-run mode for all features
-- ✅ Remove Python implementation from repo
-
-### Reliability Improvements (Secondary Priority)
-
-- Fix silent error swallowing (4+ locations)
-- Add configuration validation
-- Complete modal handling (rate limit warnings)
-- Better logging (verbose/quiet modes)
-- Progress tracking & resume capability
-
-### Understanding LinkedIn Search Limits
-
-LinkedIn limits search for 2nd/3rd-degree connections. The app has two strategies:
-
-1. **`invite`** (Invite from Search) - Direct search until limit hit
-2. **`profiles`** (Invite from Profiles) - Browse 1st-circle profiles (unlimited), use "People also viewed"
-3. **`withdraw`** (Withdraw Old Invitations) - Cleanup pending invites
+1. **`invite`** — Direct search until limit hit
+2. **`profiles`** *(not yet implemented)* — Browse 1st-circle profiles, use "People also viewed"
+3. **`withdraw`** — Cleanup old pending invites
 
 **Recommended workflow:** Run `invite` → hit limit → switch to `profiles` → periodically `withdraw`
 

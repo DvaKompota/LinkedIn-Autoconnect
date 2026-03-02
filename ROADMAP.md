@@ -4,11 +4,9 @@ This roadmap outlines planned improvements and features for the Go implementatio
 
 ## Project Status
 
-**Current Version:** 0.1.0 (Personal Tool)
-- ✅ CLI flags implementation
-- ✅ Browser state persistence
-- ✅ Invite from search (2/3 features complete)
-- ✅ Invite withdrawal
+**Current Version:** 0.1.0 (Personal Tool) — see [CHANGELOG.md](CHANGELOG.md) for shipped features
+- ✅ CLI flags, browser state persistence, dry-run mode
+- ✅ Invite from search + invite withdrawal (2/3 features complete)
 - ⚠️ **Missing:** Invite from profiles (search limit workaround)
 
 **Project Scope:** Personal automation tool for individual use, not enterprise software.
@@ -54,49 +52,6 @@ This roadmap outlines planned improvements and features for the Go implementatio
 **Success Criteria:**
 - Feature works identically to Python version
 - Can sunset Python implementation and remove from repo
-
----
-
-### 🔴 2. Dry-Run Mode for All Features
-**Priority:** CRITICAL | **Effort:** Small | **Status:** Not Started
-
-**Problem:** LinkedIn frequently changes UI, breaking locators. No way to test without sending real invites.
-
-**What it does:**
-- Run entire workflow without actually sending invites or withdrawing
-- Validates all locators still work
-- Logs what *would* happen (e.g., "Would send invite to John Doe")
-- Catches UI breakage before production runs
-
-**Implementation:**
-- [ ] Add `--dry-run` flag (boolean)
-- [ ] Pass dry-run flag through App and features
-- [ ] Replace `Connect()` with log statement in dry-run mode
-- [ ] Replace `Withdraw()` with log statement in dry-run mode
-- [ ] All page navigation and locators execute normally
-- [ ] Add dry-run indicator to logs
-- [ ] Override config settings in dry-run mode for safety and speed:
-  - `per_company_limit: 1-2` (speed up testing)
-  - `search_level: 3` and `connection_level: 3` (works for everyone, no dependency on real connections)
-  - `headless: false` (visual confirmation, up for debate)
-
-**Usage:**
-```bash
-# Test invite feature without sending
-go run cmd/autoconnect.go --feature invite --dry-run
-
-# Test profiles feature without sending
-go run cmd/autoconnect.go --feature profiles --dry-run
-
-# Test withdrawal without withdrawing
-go run cmd/autoconnect.go --feature withdraw --dry-run
-```
-
-**Success Criteria:**
-- Can validate entire workflow without side effects
-- Catches locator breakage immediately
-- Safe to run frequently to detect LinkedIn UI changes
-- Config overrides make it fast and universally runnable
 
 ---
 
@@ -286,10 +241,10 @@ count, _ := a.Invitations.CountInvitations()  // Line 27
 ### v0.2.0 - Feature Parity (Target: Next Release)
 **Focus:** Complete Python feature parity, sunset Python
 
-- ✅ Implement "Invite from Profiles" feature
-- ✅ Add dry-run mode
-- ✅ Remove Python implementation from repo
-- ✅ Update documentation
+- [ ] Implement "Invite from Profiles" feature
+- [x] Add dry-run mode *(shipped in 0.1.0)*
+- [ ] Remove Python implementation from repo
+- [ ] Update documentation
 
 **Exit Criteria:** All 3 features work in Go, Python deleted
 
